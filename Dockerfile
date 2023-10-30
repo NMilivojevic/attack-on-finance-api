@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:18-alpine as builder
+FROM node:lts-alpine as build-stage
 ENV NODE_ENV=build
 WORKDIR /usr/src/app
 
