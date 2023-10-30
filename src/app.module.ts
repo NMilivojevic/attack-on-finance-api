@@ -26,7 +26,7 @@ import { UsersModule } from './users/users.module';
       // Only enable this option if your application is in development,
       // otherwise use TypeORM migrations to sync entity schemas:
       // https://typeorm.io/#/migrations
-      synchronize: false,
+      synchronize: true,
     }),
     UsersModule,
   ],
