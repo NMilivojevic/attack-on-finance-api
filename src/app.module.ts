@@ -9,17 +9,20 @@ import { UsersModule } from './users/users.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      // host: process.env.DB_HOST,
+      host: 'primary.database--mk9dz67f74fp.addon.code.run',
+      // port: parseInt(process.env.DB_PORT),
+      port: 5432,
+      // username: process.env.DB_USERNAME,
+      username: '_0dabc1f26c2fc72f',
+      // password: process.env.DB_PASSWORD,
+      password: '_44abadb2bf44c9cfdbfed522d49d7d',
+      // database: process.env.DB_DATABASE,
+      database: '_06907542705f',
       ssl: {
         ca: fs.readFileSync(process.env.SSL_CA_CERTIFICATES),
       },
-
       autoLoadEntities: true,
-
       // Only enable this option if your application is in development,
       // otherwise use TypeORM migrations to sync entity schemas:
       // https://typeorm.io/#/migrations
