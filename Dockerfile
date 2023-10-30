@@ -1,4 +1,4 @@
-# Initiate a container to build the application in.
+# Stage 1: Build the application
 FROM node:14-alpine as builder
 ENV NODE_ENV=build
 WORKDIR /usr/src/app
@@ -18,9 +18,9 @@ RUN npm run build
 # Uninstall the dependencies not required to run the built application.
 RUN npm prune --production
 
-# Initiate a new container to run the application in.
+# Stage 2: Run the application
 FROM node:14-alpine
-  ENV NODE_ENV=production
+ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
 # Copy everything required to run the built application into the new container.
