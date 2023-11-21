@@ -2,6 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,20 +12,20 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
 import { BcryptService } from './bcrypt.service';
 import { LoginDto } from './dto/login.dto';
-// import { JwtService } from '@nestjs/jwt';
-// import jwtConfig from 'src/config/jwt.config';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
-    // @Inject(jwtConfig.KEY)
     private readonly bcryptService: BcryptService,
-    // private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<{ accessToken: string }> {
+  async register(registerDto: RegisterDto): Promise<string> {
     const { firstName, lastName, email, password } = registerDto;
     try {
       const user = new User();
@@ -33,7 +34,7 @@ export class AuthService {
       user.email = email;
       user.password = await this.bcryptService.hash(password);
       await this.userRepository.save(user);
-      return await this.generateAccessToken();
+      return 'register succesfully';
     } catch (error) {
       if (error instanceof QueryFailedError) {
         throw new HttpException(
@@ -47,6 +48,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
     const { email, password } = loginDto;
+    console.log(loginDto);
     const user = await this.userRepository.findOneBy({ email: email });
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -58,17 +60,15 @@ export class AuthService {
     if (!isPasswordMatch) {
       throw new UnauthorizedException('Invalid credentials.');
     }
-    return await this.generateAccessToken();
+
+    const payload = { sub: user.id, username: user.email };
+    return {
+      accessToken: await this.jwtService.signAsync(payload),
+    };
   }
 
-  async generateAccessToken(): Promise<{ accessToken: string }> {
-    // const payload = {
-    //   id: user.id,
-    //   email: user.email,
-    // };
-    return {
-      // accessToken: await this.jwtService.signAsync(payload),
-      accessToken: 'auth success',
-    };
+  getMe(user: any): { userId: number; email: string } {
+    console.log(user);
+    return { userId: user.sub, email: user.username };
   }
 }

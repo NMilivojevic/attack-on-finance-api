@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-// import jwtConfig from './config/jwt.config';
+// import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      // load: [jwtConfig],
-    }),
+    // ConfigModule.forRoot({
+    //   isGlobal: true,
+    // }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db',
